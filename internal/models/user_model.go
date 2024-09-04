@@ -1,4 +1,4 @@
-package model
+package models
 
 type Address struct{
 	City string `json:"city" bson:"city"`
