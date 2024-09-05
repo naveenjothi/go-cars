@@ -12,7 +12,7 @@ type BaseModel struct {
 	IsDeleted 	bool 				`json:"isDeleted" bson:"isDeleted"`
 	CreatedAt 	time.Time			`json:"createdAt" bson:"createdAt"`
 	UpdatedAt 	time.Time			`json:"updatedAt" bson:"updatedAt"`
-	DeletedAt 	time.Time			`json:"deletedAt" bson:"deletedAt"`	
+	DeletedAt  *time.Time  			`json:"deletedAt,omitempty" bson:"deletedAt,omitempty"`
 }
 
 func (bm *BaseModel)InitiliseDefaultValue(){

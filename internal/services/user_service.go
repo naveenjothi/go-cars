@@ -28,11 +28,22 @@ func (s *UserService)CreateUser(ctx *fiber.Ctx) error {
 	if err := json.Unmarshal(body, dto); err != nil {
 		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"Error": "Unable to parse body"})
 	}
-	fmt.Println("dto",dto)
+	dto.InitiliseDefaultValue()
 	insertResult,err:=s.repository.InsertOne(dto)
 	if(err != nil){
+		if mongo.IsDuplicateKeyError(err) {
+			return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"Error": "Profile name already exists"})
+		}
 		return ctx.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"Error": "Unable to create user"})
 	}
 	dto.Id = insertResult.InsertedID.(primitive.ObjectID)
 	return ctx.Status(fiber.StatusCreated).JSON(dto)
+}
+
+func (s *UserService)FindOneUserByID(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	fmt.Println("id",id)
+	resp := s.repository.FindById(id)
+	fmt.Println(resp)
+	return nil
 }

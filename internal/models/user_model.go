@@ -12,5 +12,5 @@ type UserModel struct{
 	Email string `json:"email" bson:"email"`
 	ProfileName string `json:"profileName" bson:"profileName"`
 	Address Address `json:"address" bson:"address"`
-	BaseModel
+	BaseModel `bson:",inline"`
 }
