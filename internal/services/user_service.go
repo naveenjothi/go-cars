@@ -1,7 +1,6 @@
 package services
 
 import (
-	"encoding/json"
 	"go-cars/internal/models"
 	"go-cars/internal/repos"
 	"go-cars/internal/utils"
@@ -23,9 +22,8 @@ func NewUserService(collection *mongo.Collection) *UserService {
 
 func (s *UserService) CreateUser(ctx *fiber.Ctx) error {
 	dto := new(models.UserModel)
-	body := ctx.Body()
-	if err := json.Unmarshal(body, dto); err != nil {
-		return ctx.Status(fiber.StatusBadRequest).JSON(fiber.Map{"Error": "Unable to parse body"})
+	if err := utils.GetBodyPayload(ctx, dto); err != nil {
+		return err
 	}
 	dto.InitiliseDefaultValue()
 	insertResult, err := s.repository.InsertOne(dto)
@@ -51,4 +49,30 @@ func (s *UserService) FindOneUserByID(ctx *fiber.Ctx) error {
 		return utils.HandleMongoError(ctx, err, id)
 	}
 	return ctx.Status(fiber.StatusOK).JSON(user)
+}
+
+func (s *UserService) UpdateUser(ctx *fiber.Ctx) error {
+	id := ctx.Params("id")
+	dto := new(models.UserModel)
+	if err := utils.GetBodyPayload(ctx, dto); err != nil {
+		return err
+	}
+	exists := new(models.UserModel)
+	resp, err := s.repository.FindById(id)
+	if err != nil {
+		return utils.HandleMongoError(ctx, err, id)
+	}
+	if err := resp.Decode(exists); err != nil {
+		return utils.HandleMongoError(ctx, err, id)
+	}
+	changes := utils.IdentifyChanges(exists, dto)
+	if len(changes) == 0 {
+		return ctx.Status(fiber.StatusOK).JSON(exists)
+	}
+	dto.UpdateDefaultValue()
+	updatedData, err := s.repository.UpdateOne(id, changes)
+	if err != nil {
+		return utils.HandleMongoError(ctx, err, id)
+	}
+	return ctx.Status(fiber.StatusOK).JSON(updatedData)
 }

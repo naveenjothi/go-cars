@@ -8,18 +8,26 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-func CreateUserHandler(ctx *fiber.Ctx,client *mongo.Client) error {
+func CreateUserHandler(ctx *fiber.Ctx, client *mongo.Client) error {
 	collection := database.GetUserCollection(client)
-	
+
 	userService := services.NewUserService(collection)
 
 	return userService.CreateUser(ctx)
 }
 
-func GetUserHandler(ctx *fiber.Ctx,client *mongo.Client) error {
+func GetUserHandler(ctx *fiber.Ctx, client *mongo.Client) error {
 	collection := database.GetUserCollection(client)
-	
+
 	userService := services.NewUserService(collection)
 
 	return userService.FindOneUserByID(ctx)
+}
+
+func UpdateUserHandler(ctx *fiber.Ctx, client *mongo.Client) error {
+	collection := database.GetUserCollection(client)
+
+	userService := services.NewUserService(collection)
+
+	return userService.UpdateUser(ctx)
 }

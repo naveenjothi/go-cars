@@ -8,8 +8,9 @@ import (
 )
 
 func (s *FiberServer) RegisterFiberRoutes() {
-	s.App.Post("/user",s.withClient(user.CreateUserHandler))
-	s.App.Get("/user/:id",s.withClient(user.GetUserHandler))
+	s.App.Post("/user", s.withClient(user.CreateUserHandler))
+	s.App.Get("/user/:id", s.withClient(user.GetUserHandler))
+	s.App.Post("/user/:id", s.withClient(user.UpdateUserHandler))
 }
 
 func (s *FiberServer) withClient(handler func(*fiber.Ctx, *mongo.Client) error) fiber.Handler {
