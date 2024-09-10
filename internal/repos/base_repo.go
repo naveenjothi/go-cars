@@ -2,8 +2,10 @@ package repos
 
 import (
 	"context"
+	"log"
 
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
@@ -15,12 +17,20 @@ func NewRepository(collection *mongo.Collection) *Repository {
 	return &Repository{collection}
 }
 
-func (r *Repository) FindById(id string) *mongo.SingleResult {
-	filter := bson.M{"_id": id}
+func (r *Repository) FindById(id string) (*mongo.SingleResult,error) {
+	log.Printf("Finding %s in the collection", id)
+
+    objectID, err := primitive.ObjectIDFromHex(id)
+    if err != nil {
+        log.Printf("Invalid ID format: %v", err)
+		return nil,err
+    }
+    
+    filter := bson.M{"_id": objectID}
 
 	result := r.collection.FindOne(context.Background(), filter)
 
-	return result
+	return result,nil
 }
 
 func (r *Repository) FindOne(filter interface{}) *mongo.SingleResult {
