@@ -4,6 +4,7 @@ import (
 	"go-cars/internal/models"
 	"go-cars/internal/repos"
 	"go-cars/internal/utils"
+	"time"
 
 	"github.com/gofiber/fiber/v2"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -69,7 +70,7 @@ func (s *UserService) UpdateUser(ctx *fiber.Ctx) error {
 	if len(changes) == 0 {
 		return ctx.Status(fiber.StatusOK).JSON(exists)
 	}
-	dto.UpdateDefaultValue()
+	changes["updatedAt"] = time.Now()
 	updatedData, err := s.repository.UpdateOne(id, changes)
 	if err != nil {
 		return utils.HandleMongoError(ctx, err, id)
