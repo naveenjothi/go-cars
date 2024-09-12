@@ -12,6 +12,7 @@ type UserModel struct {
 	FirstName        string  `json:"firstName" bson:"firstName"`
 	LastName         string  `json:"lastName" bson:"lastName"`
 	Mobile           string  `json:"mobile" bson:"mobile"`
+	PhotoUrl         string  `json:"photoUrl" bson:"photoUrl"`
 	Email            string  `json:"email" bson:"email"`
 	ProfileName      string  `json:"profileName" bson:"profileName"`
 	Address          Address `json:"address" bson:"address"`
