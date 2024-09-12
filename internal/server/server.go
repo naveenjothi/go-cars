@@ -16,8 +16,8 @@ type FiberServer struct {
 }
 
 func New() *FiberServer {
-	client,err:=database.InitializeMongoClient()
-	if err != nil{
+	client, err := database.InitializeMongoClient()
+	if err != nil {
 		fmt.Println(err.Error())
 	}
 	server := &FiberServer{
@@ -25,7 +25,7 @@ func New() *FiberServer {
 			ServerHeader: "go-cars",
 			AppName:      "go-cars",
 		}),
-		client:client,
+		client: client,
 	}
 
 	return server
